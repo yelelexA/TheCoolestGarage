@@ -4,8 +4,8 @@ Shader "TZ/CarColorVoronoi"
     {        
         _Color ("Main Color", Color) = (0.02264148,0.4396222,1,1)		
         _BorderColor ("Border Color", Color) = (1,1,1,1)
-        _CellSize ("Cell Size", Range(0, 2)) = 1.4
-        _Metalic ("Metalic", Range(0,1)) = 0.6
+        _CellSize ("Cell Size", Range(0.1, 2)) = 1.4
+        _Metallic ("Metalic", Range(0,1)) = 0.6
         _Smoothness ("Smoothness", Range(0,1)) = 0.745
 	}
 	SubShader 
@@ -14,7 +14,7 @@ Shader "TZ/CarColorVoronoi"
 
 		CGPROGRAM
 
-		#pragma surface surf Standard fullforwardshadows
+		#pragma surface surf Standard fullforwardshadows vertex:vert
 		#pragma target 3.0
 
 		// #include "Random.cginc"
@@ -27,6 +27,7 @@ Shader "TZ/CarColorVoronoi"
 
 		struct Input {
 			float3 worldPos;
+            float3 localPos;
 		};
 
 
@@ -172,8 +173,13 @@ Shader "TZ/CarColorVoronoi"
     		return float3(minDistToCell, random, minEdgeDistance);
 		}
 
+        void vert(inout appdata_full v, out Input o){
+            UNITY_INITIALIZE_OUTPUT(Input, o);
+            o.localPos = v.vertex.xyz;
+        }
+
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			float3 value = IN.worldPos.xyz / _CellSize;
+			float3 value = IN.localPos.xyz / _CellSize;
 			float3 noise = voronoiNoise(value);
 			float3 cellColor = rand1dTo3d(noise.y) * _Color; 
 			float valueChange = fwidth(value.z) * 0.5;

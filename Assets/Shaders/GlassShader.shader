@@ -2,9 +2,9 @@ Shader "TZ/GlassShader"
 {
     Properties
     {
-        [HideInInspector] _MainTex ("Albedo (RGB)", 2D) = "white"{}
         _Smoothness ("Smoothness", Range(0,1)) = 0.5
         _Opacity ("Opacity", Range(0,1)) = 0.5
+        _OpacityPower ("OpacityPower", Range(1,2)) = 1
     }
     SubShader
     {
@@ -18,6 +18,7 @@ Shader "TZ/GlassShader"
         sampler2D _MainTex;
         half _Smoothness;
         float _Opacity;
+        float _OpacityPower;
 
         struct Input
         {
@@ -26,8 +27,7 @@ Shader "TZ/GlassShader"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-            o.Alpha = IN.uv_MainTex * _Opacity;
+            o.Alpha = _Opacity * _OpacityPower;
             o.Smoothness = _Smoothness;
         }
         ENDCG

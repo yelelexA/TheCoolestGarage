@@ -15,7 +15,6 @@ Shader "TZ/GlassShader"
         #pragma surface surf Standard alpha
         #pragma target 3.0
 
-        sampler2D _MainTex;
         half _Smoothness;
         float _Opacity;
         float _OpacityPower;

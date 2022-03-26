@@ -4,7 +4,7 @@ Shader "TZ/WheelDisk"
     {
         [HideInInspector] _MainTex ("Albedo (RGB)", 2D) = "white"{}
         _Color ("Main Color (RGB)", Color) = (1,1,1,1)
-        _Metalic ("Metalic", Range(0,1)) = 0.6
+        _Metallic ("Metallic", Range(0,1)) = 0.6
         _Smoothness ("Smoothness", Range(0,1)) = 0.5
         // _Opacity ("Opacity", Range(0,1)) = 0.5
     }

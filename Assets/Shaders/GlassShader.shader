@@ -38,15 +38,13 @@ Shader "TZ/GlassShader"
             }
 
             float4 frag(vertexOutput input) : COLOR{
-                float3 rgb = min(min(_Color.x, _Color.y), _Color);
+                float3 rgb = min(min(_Color.x, _Color.y), _Color.z);
                  rgb = rgb > 0.3 ? 0.3 : rgb;
 
                 float4 output = float4(rgb, _Opacity);
                 return output;
             }
-
             ENDCG
 		}			
 	}	
-
 }

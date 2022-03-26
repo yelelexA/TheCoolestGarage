@@ -1,36 +1,52 @@
 Shader "TZ/GlassShader"
 {
-    Properties
-    {
-        [HideInInspector] _MainTex ("Albedo (RGB)", 2D) = "white"{}
-        _Smoothness ("Smoothness", Range(0,1)) = 0.5
-        _Opacity ("Opacity", Range(0,1)) = 0.5
-    }
-    SubShader
-    {
-        Tags { "RenderType"="Opaque" }
-        LOD 200
+	Properties
+	{
+		_Color("Color", Color) = (0, 0, 0, 0)
+        _Opacity("Opacuty", Range(0, 1)) = 0.5
+	}
+	SubShader
+	{
+		Tags { "Queue" = "Transparent" }
 
-        CGPROGRAM
-        #pragma surface surf Standard alpha
-        #pragma target 3.0
+		Pass
+		{
+			Cull Off
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
 
-        sampler2D _MainTex;
-        half _Smoothness;
-        float _Opacity;
+			CGPROGRAM
 
-        struct Input
-        {
-            float2 uv_MainTex;
-        };
+			#pragma vertex vert
+			#pragma fragment frag
 
-        void surf (Input IN, inout SurfaceOutputStandard o)
-        {
-            fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-            o.Alpha = IN.uv_MainTex * _Opacity;
-            o.Smoothness = _Smoothness;
-        }
-        ENDCG
-    }
-    FallBack "Diffuse"
+            uniform float4	_Color;
+            float _Opacity;
+
+            struct vertexInput{
+                float4 vertex : POSITION;
+            };
+
+            struct vertexOutput{
+                float4 pos : SV_POSITION;
+            };
+
+            vertexOutput vert(vertexInput input){
+                vertexOutput output;
+                output.pos = UnityObjectToClipPos(input.vertex);
+                return output;
+            }
+
+            float4 frag(vertexOutput input) : COLOR{
+                float3 rgb = min(min(_Color.x, _Color.y), _Color);
+                 rgb = rgb > 0.3 ? 0.3 : rgb;
+
+                float4 output = float4(rgb, _Opacity);
+                return output;
+            }
+
+            ENDCG
+		}			
+	}	
+
 }
